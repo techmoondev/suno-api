@@ -10,6 +10,11 @@
       "name": "default"
     }
   ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
   "paths": {
     "/api/generate": {
       "post": {
@@ -808,6 +813,13 @@
         },
         "title": "audio_info",
         "description": "Audio Info"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "suno-api-key"
       }
     }
   }
