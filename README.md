@@ -11,7 +11,7 @@
   | <a target="_blank" href="./README_RU.md">русский</a> 
   | <a target="_blank" href="https://suno.gcui.ai">Demo</a> 
   | <a target="_blank" href="https://suno.gcui.ai/docs">Docs</a> 
-  | <a target="_blank" href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgcui-art%2Fsuno-api&env=SUNO_COOKIE,TWOCAPTCHA_KEY,BROWSER,BROWSER_GHOST_CURSOR,BROWSER_LOCALE,BROWSER_HEADLESS&project-name=suno-api&repository-name=suno-api">Deploy with Vercel</a> 
+  | <a target="_blank" href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgcui-art%2Fsuno-api&env=SUNO_COOKIE,TWOCAPTCHA_KEY,BROWSER,BROWSER_GHOST_CURSOR,BROWSER_LOCALE,BROWSER_HEADLESS,SUNO_API_KEY&project-name=suno-api&repository-name=suno-api">Deploy with Vercel</a> 
 </p>
 <p align="center">
   <a href="https://www.producthunt.com/products/gcui-art-suno-api-open-source-sunoai-api/reviews?utm_source=badge-product_review&utm_medium=badge&utm_souce=badge-gcui&#0045;art&#0045;suno&#0045;api&#0045;open&#0045;source&#0045;sunoai&#0045;api" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=577408&theme=light" alt="gcui&#0045;art&#0047;suno&#0045;api&#0058;Open&#0045;source&#0032;SunoAI&#0032;API - Use&#0032;API&#0032;to&#0032;call&#0032;the&#0032;music&#0032;generation&#0032;AI&#0032;of&#0032;suno&#0046;ai&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
@@ -20,6 +20,16 @@
 > 🔥 Check out my new project: [ReadPo - 10x Speed Up Your Reading and Writing](https://readpo.com?utm_source=github&utm_medium=suno-ai)
 
 ![suno-api banner](https://github.com/gcui-art/suno-api/blob/main/public/suno-banner.png)
+
+## API Security
+
+This project includes API key authentication to protect your endpoints. To use it, you need to set the `SUNO_API_KEY` environment variable.
+
+All requests to `/api/*` and `/v1/*` routes must include a `suno-api-key` header with the value of your API key.
+
+Example: `suno-api-key: your-secret-api-key`
+
+If the API key is missing or invalid, the server will respond with a `401 Unauthorized` error.
 
 ## Introduction
 
@@ -39,7 +49,7 @@ We have deployed an example bound to a free Suno account, so it has daily usage 
 - Perfectly implements the creation API from suno.ai.
 - Automatically keep the account active.
 - Solve CAPTCHAs automatically using [2Captcha](https://2captcha.com) and [Playwright](https://playwright.dev) with [rebrowser-patches](https://github.com/rebrowser/rebrowser-patches).
-- Compatible with the format of OpenAI’s `/v1/chat/completions` API.
+- Compatible with the format of OpenAI's `/v1/chat/completions` API.
 - Supports Custom Mode.
 - One-click deployment to [Vercel](#deploy-to-vercel) & [Docker](#docker).
 - In addition to the standard API, it also adapts to the API Schema of Agent platforms like GPTs and Coze, so you can use it as a tool/plugin/Action for LLMs and integrate it into any AI Agent.
@@ -76,7 +86,7 @@ You can choose your preferred deployment method:
 
 #### Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgcui-art%2Fsuno-api&env=SUNO_COOKIE,TWOCAPTCHA_KEY,BROWSER,BROWSER_GHOST_CURSOR,BROWSER_LOCALE,BROWSER_HEADLESS&project-name=suno-api&repository-name=suno-api)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgcui-art%2Fsuno-api&env=SUNO_COOKIE,TWOCAPTCHA_KEY,BROWSER,BROWSER_GHOST_CURSOR,BROWSER_LOCALE,BROWSER_HEADLESS,SUNO_API_KEY&project-name=suno-api&repository-name=suno-api)
 
 #### Run locally
 
@@ -99,7 +109,7 @@ docker compose build && docker compose up
 
 - If deployed to Vercel, please add the environment variables in the Vercel dashboard.
 
-- If you’re running this locally, be sure to add the following to your `.env` file:
+- If you're running this locally, be sure to add the following to your `.env` file:
 #### Environment variables
 - `SUNO_COOKIE` — the `Cookie` header you obtained in the first step.
 - `TWOCAPTCHA_KEY` — your 2Captcha API key from the second step.
@@ -107,6 +117,7 @@ docker compose build && docker compose up
 - `BROWSER_GHOST_CURSOR` — use ghost-cursor-playwright to simulate smooth mouse movements. Please note that it doesn't seem to make any difference in the rate of CAPTCHAs, so you can set it to `false`. Retained for future testing.
 - `BROWSER_LOCALE` — the language of the browser. Using either `en` or `ru` is recommended, since those have the most workers on 2Captcha. [List of supported languages](https://2captcha.com/2captcha-api#language)
 - `BROWSER_HEADLESS` — run the browser without the window. You probably want to set this to `true`.
+- `SUNO_API_KEY` — Your secret API key to protect your endpoints.
 ```bash
 SUNO_COOKIE=<…>
 TWOCAPTCHA_KEY=<…>
@@ -114,11 +125,12 @@ BROWSER=chromium
 BROWSER_GHOST_CURSOR=false
 BROWSER_LOCALE=en
 BROWSER_HEADLESS=true
+SUNO_API_KEY=your-secret-api-key
 ```
 
 ### 5. Run suno-api
 
-- If you’ve deployed to Vercel:
+- If you've deployed to Vercel:
   - Please click on Deploy in the Vercel dashboard and wait for the deployment to be successful.
   - Visit the `https://<vercel-assigned-domain>/api/get_limit` API for testing.
 - If running locally:
@@ -148,10 +160,10 @@ Suno API currently mainly implements the following APIs:
 
 ```bash
 - `/api/generate`: Generate music
-- `/v1/chat/completions`: Generate music - Call the generate API in a format that works with OpenAI’s API.
+- `/v1/chat/completions`: Generate music - Call the generate API in a format that works with OpenAI's API.
 - `/api/custom_generate`: Generate music (Custom Mode, support setting lyrics, music style, title, etc.)
 - `/api/generate_lyrics`: Generate lyrics based on prompt
-- `/api/get`: Get music information based on the id. Use “,” to separate multiple ids.
+- `/api/get`: Get music information based on the id. Use "," to separate multiple ids.
     If no IDs are provided, all music will be returned.
 - `/api/get_limit`: Get quota Info
 - `/api/extend_audio`: Extend audio length
@@ -176,45 +188,51 @@ import requests
 
 # replace with your suno-api URL
 base_url = 'http://localhost:3000'
+# replace with your api key
+suno_api_key = 'your-secret-api-key'
 
+headers = {
+    'Content-Type': 'application/json',
+    'suno-api-key': suno_api_key
+}
 
 def custom_generate_audio(payload):
     url = f"{base_url}/api/custom_generate"
-    response = requests.post(url, json=payload, headers={'Content-Type': 'application/json'})
+    response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
 
 def extend_audio(payload):
     url = f"{base_url}/api/extend_audio"
-    response = requests.post(url, json=payload, headers={'Content-Type': 'application/json'})
+    response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
 def generate_audio_by_prompt(payload):
     url = f"{base_url}/api/generate"
-    response = requests.post(url, json=payload, headers={'Content-Type': 'application/json'})
+    response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
 
 def get_audio_information(audio_ids):
     url = f"{base_url}/api/get?ids={audio_ids}"
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     return response.json()
 
 
 def get_quota_information():
     url = f"{base_url}/api/get_limit"
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     return response.json()
 
 def get_clip(clip_id):
     url = f"{base_url}/api/clip?id={clip_id}"
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     return response.json()
 
 def generate_whole_song(clip_id):
     payload = {"clip_id": clip_id}
     url = f"{base_url}/api/concat"
-    response = requests.post(url, json=payload)
+    response = requests.post(url, json=payload, headers=headers)
     return response.json()
 
 
@@ -246,46 +264,47 @@ const axios = require("axios");
 
 // replace your vercel domain
 const baseUrl = "http://localhost:3000";
+// replace with your api key
+const sunoApiKey = 'your-secret-api-key';
+
+const headers = {
+    'Content-Type': 'application/json',
+    'suno-api-key': sunoApiKey
+};
 
 async function customGenerateAudio(payload) {
   const url = `${baseUrl}/api/custom_generate`;
-  const response = await axios.post(url, payload, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await axios.post(url, payload, { headers });
   return response.data;
 }
 
 async function generateAudioByPrompt(payload) {
   const url = `${baseUrl}/api/generate`;
-  const response = await axios.post(url, payload, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await axios.post(url, payload, { headers });
   return response.data;
 }
 
 async function extendAudio(payload) {
   const url = `${baseUrl}/api/extend_audio`;
-  const response = await axios.post(url, payload, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await axios.post(url, payload, { headers });
   return response.data;
 }
 
 async function getAudioInformation(audioIds) {
   const url = `${baseUrl}/api/get?ids=${audioIds}`;
-  const response = await axios.get(url);
+  const response = await axios.get(url, { headers });
   return response.data;
 }
 
 async function getQuotaInformation() {
   const url = `${baseUrl}/api/get_limit`;
-  const response = await axios.get(url);
+  const response = await axios.get(url, { headers });
   return response.data;
 }
 
 async function getClipInformation(clipId) {
   const url = `${baseUrl}/api/clip?id=${clipId}`;
-  const response = await axios.get(url);
+  const response = await axios.get(url, { headers });
   return response.data;
 }
 
